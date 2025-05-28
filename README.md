@@ -4,6 +4,21 @@ In this repo, you will find all the files and instructions required to complete 
 
 ## Getting Started
 
+1. Create a new conda environment:
+```bash
+conda create -n agentic_workflows python=3.13
+```
+
+2. Activate the environment:
+```bash
+conda activate agentic_workflows
+```
+
+3. Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
+
 The project needs to be completed in two phases and you will find starter code for both the phases inside the `starter` folder in this repo. 
 
 ## Dependencies
