@@ -1,4 +1,5 @@
 # TODO: 1 - import the OpenAI class from the openai library
+from openai import OpenAI
 import numpy as np
 import pandas as pd
 import re
@@ -320,23 +321,31 @@ class RoutingAgent():
 
 '''
 
-'''
 class ActionPlanningAgent:
-
     def __init__(self, openai_api_key, knowledge):
-        # TODO: 1 - Initialize the agent attributes here
+        """Initialize the agent with API key and knowledge."""
+        self.openai_api_key = openai_api_key
+        self.knowledge = knowledge
 
     def extract_steps_from_prompt(self, prompt):
-
-        # TODO: 2 - Instantiate the OpenAI client using the provided API key
-        # TODO: 3 - Call the OpenAI API to get a response from the "gpt-3.5-turbo" model.
-        # Provide the following system prompt along with the user's prompt:
-        # "You are an action planning agent. Using your knowledge, you extract from the user prompt the steps requested to complete the action the user is asking for. You return the steps as a list. Only return the steps in your knowledge. Forget any previous context. This is your knowledge: {pass the knowledge here}"
-
-        response_text = ""  # TODO: 4 - Extract the response text from the OpenAI API response
-
-        # TODO: 5 - Clean and format the extracted steps by removing empty lines and unwanted text
-        steps = response_text.split("\n")
-
+        """Extract steps from the prompt using the provided knowledge."""
+        client = OpenAI(api_key=self.openai_api_key)
+        
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"You are an action planning agent. Using your knowledge, you extract from the user prompt the steps requested to complete the action the user is asking for. You return the steps as a list. Only return the steps in your knowledge. Forget any previous context. This is your knowledge: {self.knowledge}"
+                },
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0
+        )
+        
+        response_text = response.choices[0].message.content
+        
+        # Clean and format the extracted steps
+        steps = [step.strip() for step in response_text.split("\n") if step.strip()]
+        
         return steps
-'''
