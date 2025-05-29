@@ -1,4 +1,5 @@
 # TODO: 1 - Import RAGKnowledgePromptAgent
+from workflow_agents.base_agents import RAGKnowledgePromptAgent
 import os
 from dotenv import load_dotenv
 
@@ -9,7 +10,7 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 persona = "You are a college professor, your answer always starts with: Dear students,"
-RAG_knowledge_prompt_agent = # TODO: 2 - Instantiate RAGKnowledgePromptAgent
+RAG_knowledge_prompt_agent = RAGKnowledgePromptAgent(openai_api_key=openai_api_key, persona=persona)
 
 knowledge_text = """
 In the historic city of Boston, Clara, a marine biologist and science communicator, began each morning analyzing sonar data to track whale migration patterns along the Atlantic coast.
@@ -20,7 +21,7 @@ Her father, Mykola, had been a radio engineer at a local observatory, skilled in
 He often told Clara stories about jury-rigging radio antennas during snowstorms and helping amateur astronomers decode signals from distant pulsars.
 Her mother, Olena, was a physics teacher with a hidden love for poetry and dissident literature. In the evenings, she would read from both Ukrainian folklore and banned Western science fiction.
 They survived harsh winters, electricity blackouts, and the collapse of the Soviet economy, but always prioritized education and storytelling in their home.
-Clara’s childhood was shaped by tales of how her parents shared soldering irons with neighbors, built makeshift telescopes, and taught physics to students with no textbooks but endless curiosity.
+Clara's childhood was shaped by tales of how her parents shared soldering irons with neighbors, built makeshift telescopes, and taught physics to students with no textbooks but endless curiosity.
 
 Inspired by their resilience and thirst for knowledge, Clara created a podcast called **"Crosscurrents"**, a show that explored the intersection of science, culture, and ethics.
 Each week, she interviewed researchers, engineers, artists, and activists—from marine ecologists and AI ethicists to digital archivists preserving endangered languages.
@@ -42,8 +43,13 @@ To Clara, knowledge was a living system—retrieved from the past, generated in 
 Her life and work were testaments to the power of connecting across disciplines, borders, and generations—exactly the kind of story that RAG models were born to find.
 """
 
-chunks = # TODO: 3 - Compute the knowledge_text the chunks
-embbedings = # TODO: 4 - Compute the knowledge_text the chunk embbedings
+# TODO: 3 - Compute the knowledge_text the chunks
+chunks = RAG_knowledge_prompt_agent.chunk_text(knowledge_text)
+# TODO: 4 - Compute the knowledge_text the chunk embbedings
+embbedings = RAG_knowledge_prompt_agent.calculate_embeddings()
 
 prompt = "What is the podcast that Clara hosts about?"
 # TODO: 5 - Print the prompt and the response
+response = RAG_knowledge_prompt_agent.find_prompt_in_knowledge(prompt)
+print(f"\nPrompt: {prompt}")
+print(f"Response: {response}")
