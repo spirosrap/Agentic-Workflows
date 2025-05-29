@@ -327,3 +327,41 @@ class ActionPlanningAgent:
         steps = [step.strip() for step in response_text.split("\n") if step.strip()]
         
         return steps
+
+class RoutingAgent:
+    def __init__(self, openai_api_key, agents):
+        """Initialize the routing agent with API key and list of agents."""
+        self.openai_api_key = openai_api_key
+        self.agents = agents
+
+    def get_embedding(self, text):
+        """Get embedding for text using OpenAI's embedding API."""
+        client = OpenAI(api_key=self.openai_api_key)
+        response = client.embeddings.create(
+            model="text-embedding-3-large",
+            input=text,
+            encoding_format="float"
+        )
+        return response.data[0].embedding
+
+    def calculate_similarity(self, vector_one, vector_two):
+        """Calculate cosine similarity between two vectors."""
+        vec1, vec2 = np.array(vector_one), np.array(vector_two)
+        return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+
+    def route(self, prompt):
+        """Route the prompt to the most appropriate agent based on semantic similarity."""
+        prompt_embedding = self.get_embedding(prompt)
+        
+        # Calculate similarity with each agent's description
+        similarities = []
+        for agent in self.agents:
+            description_embedding = self.get_embedding(agent["description"])
+            similarity = self.calculate_similarity(prompt_embedding, description_embedding)
+            similarities.append((agent, similarity))
+        
+        # Select the agent with highest similarity
+        selected_agent = max(similarities, key=lambda x: x[1])[0]
+        
+        # Call the selected agent's function with the prompt
+        return selected_agent["func"](prompt)
