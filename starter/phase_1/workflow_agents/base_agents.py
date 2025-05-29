@@ -28,12 +28,12 @@ class DirectPromptAgent:
         # TODO: 5 - Return only the textual content of the response (not the full JSON response).
 '''
         
-'''
 # AugmentedPromptAgent class definition
 class AugmentedPromptAgent:
     def __init__(self, openai_api_key, persona):
         """Initialize the agent with given attributes."""
         # TODO: 1 - Create an attribute for the agent's persona
+        self.persona = persona
         self.openai_api_key = openai_api_key
 
     def respond(self, input_text):
@@ -45,13 +45,14 @@ class AugmentedPromptAgent:
             model="gpt-3.5-turbo",
             messages=[
                 # TODO: 3 - Add a system prompt instructing the agent to assume the defined persona and explicitly forget previous context.
+                {"role": "system", "content": f"You are {self.persona}. Forget all previous context."},
                 {"role": "user", "content": input_text}
             ],
             temperature=0
         )
 
-        return  # TODO: 4 - Return only the textual content of the response, not the full JSON payload.
-'''
+        # TODO: 4 - Return only the textual content of the response, not the full JSON payload.
+        return response.choices[0].message.content
 
 '''
 # KnowledgeAugmentedPromptAgent class definition
