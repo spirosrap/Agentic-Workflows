@@ -169,7 +169,16 @@ class RAGKnowledgePromptAgent:
                 "end_char": end
             })
 
-            start = end - self.chunk_overlap
+            # Stop once we have consumed the final slice; prevents repeating
+            # the same trailing window when overlap is non-zero.
+            if end >= len(text):
+                break
+
+            next_start = end - self.chunk_overlap
+            if next_start <= start:
+                break
+
+            start = next_start
             chunk_id += 1
 
         with open(f"chunks-{self.unique_filename}", 'w', newline='', encoding='utf-8') as csvfile:
